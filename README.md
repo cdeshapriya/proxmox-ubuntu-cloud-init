@@ -97,7 +97,7 @@ sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "chsh -s /u
 sudo virt-customize -a jammy-server-cloudimg-amd64.img --update
 ```
 
-## Create the vm
+## Change your bridge and storage values, as well as the defaults, to suit your needs.
 
 ```
   514  sudo qm create 1001 --name "ubuntu-22.04-template" --memory 8192 --cores 8 --net0 virtio,bridge=vmbr0
@@ -109,12 +109,71 @@ sudo virt-customize -a jammy-server-cloudimg-amd64.img --update
 sudo qm importdisk 1001 jammy-server-cloudimg-amd64.img vdata
 ```
 
-Note: Change the ```vdata``` as per your storage name
+**Note:** Change the ```vdata``` as per your proxmox storage name. 
 
-  516  sudo qm set 1001 --scsihw virtio-scsi-pci --scsi0 vdata:vm-1001-disk-0
-  517  sudo qm set 1001 --boot c --bootdisk scsi0
-  518  sudo qm set 1001 --ide2 vdata:cloudinit
-  519  sudo qm set 1001 --serial0 socket --vga serial0
-  520  sudo qm set 1001 --agent enabled=1
-  521  sudo qm template 1001
-  522  history > create-vm-tmpl.txt
+## Setup storage  driver for vm disk `vm-1001-disk-0`
+```
+sudo qm set 1001 --scsihw virtio-scsi-pci --scsi0 vdata:vm-1001-disk-0
+```
+
+## Setup boot disk 
+
+```
+sudo qm set 1001 --boot c --bootdisk scsi0
+```
+
+## Set up disk for cloud-init scripts 
+
+```  
+sudo qm set 1001 --ide2 vdata:cloudinit
+```
+
+## Setup Serial Port
+
+```
+qm set 1001 --serial0 socket
+```
+
+## Setup VGA to use SPICE
+
+```  
+sudo qm set 1001 --vga qlx
+```
+
+## Set Qemu Agent 
+
+```
+sudo qm set 1001 --agent enabled=1
+```
+
+For additional information please visit [visit](https://pve.proxmox.com/wiki/Qemu-guest-agent)
+  
+## Setup  ssh key 
+
+```
+qm set 1001 --sshkey /root/.ssh/id_rsa.pub 
+```
+
+## Setup a static IP
+
+```
+qm set 1001 --ipconfig0 ip=10.200.1.220/24,gw=10.200.1.1
+```
+
+## Setup templateg 
+
+```
+sudo qm template 1001
+```
+
+## Deploying VMS from template
+
+To construct new virtual machines (VMs), we may now clone this template or reference it using Terraform, Proxmox, or any other tool.
+
+It is only possible to log in using SSH if the user "ubuntu" and the SSH keys supplied in the cloudinit image are required.
+
+
+
+
+
+
