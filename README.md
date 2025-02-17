@@ -49,15 +49,68 @@ UBUNTUPASS=$(LC_ALL=C </dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28
 echo $UBUNTUPASS > password_ubuntu.txt
 ```
 
-  507  sudo virt-customize -a jammy-server-cloudimg-amd64.img --root-password file:password_root.txt
-  508  sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "useradd -m -s /bin/bash ubuntu"
-  509  sudo virt-customize -a jammy-server-cloudimg-amd64.img --password myuser:file:password_ubuntu.txt
-  510  sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "apt-add-repository ppa:fish-shell/release-3 --yes"
-  511  sudo virt-customize -a jammy-server-cloudimg-amd64.img --install fish
-  512  sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "chsh -s /usr/bin/fish ubuntu"
-  513  sudo virt-customize -a jammy-server-cloudimg-amd64.img --update
+## Setup root user  password
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --root-password file:password_root.txt
+```
+
+## Add ubuntu user as an admin user
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "useradd -m -s /bin/bash ubuntu"
+```
+
+## Add ubuntu user into sudo group
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "usermod -a -G sudo ubuntu"
+```
+
+## Set ubuntu user password
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --password ubuntu:file:password_ubuntu.txt
+```
+
+## Add additional fish shell repository
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "apt-add-repository ppa:fish-shell/release-3 --yes"
+```
+
+## Install fish shell
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --install fish
+```
+
+## Setup fish shell to ubuntu user
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "chsh -s /usr/bin/fish ubuntu"
+```
+
+## Update the image 
+
+```
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --update
+```
+
+## Create the vm
+
+```
   514  sudo qm create 1001 --name "ubuntu-22.04-template" --memory 8192 --cores 8 --net0 virtio,bridge=vmbr0
-  515  sudo qm importdisk 1001 jammy-server-cloudimg-amd64.img vdata
+```
+
+## Import the image as the vm disk
+
+```
+sudo qm importdisk 1001 jammy-server-cloudimg-amd64.img vdata
+```
+
+Note: Change the ```vdata``` as per your storage name
+
   516  sudo qm set 1001 --scsihw virtio-scsi-pci --scsi0 vdata:vm-1001-disk-0
   517  sudo qm set 1001 --boot c --bootdisk scsi0
   518  sudo qm set 1001 --ide2 vdata:cloudinit
