@@ -174,4 +174,9 @@ It is only possible to log in using SSH if the user "ubuntu" and the SSH keys su
 
 ## Expand disk size
 
+Make sure that you increase disk size of your VM as per your project.
+
+[![Proxmox Disk Action](/images
+/proxmoxpl1-Proxmox-Virtual-Environment-02-18-2025_11_37_AM.png)
+
 
