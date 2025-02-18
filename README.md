@@ -171,3 +171,7 @@ sudo qm template 1001
 To construct new virtual machines (VMs), we may now clone this template or reference it using Terraform, Proxmox, or any other tool.
 
 It is only possible to log in using SSH if the user "ubuntu" and the SSH keys supplied in the cloudinit image are required.
+
+## Expand disk size
+
+
