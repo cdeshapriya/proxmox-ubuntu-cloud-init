@@ -146,7 +146,7 @@ sudo qm set 1001 --vga qlx
 sudo qm set 1001 --agent enabled=1
 ```
 
-For additional information please visit [visit](https://pve.proxmox.com/wiki/Qemu-guest-agent)
+For additional information please [visit](https://pve.proxmox.com/wiki/Qemu-guest-agent)
   
 ## Setup  ssh key 
 
